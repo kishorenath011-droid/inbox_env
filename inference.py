@@ -1,19 +1,22 @@
-def run(input_data):
-    try:
-        # Extract email text safely
-        email = input_data.get("email", "").lower()
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-        if any(word in email for word in ["urgent", "asap", "immediately"]):
-            return {"priority": "high", "category": "urgent"}
+app = FastAPI()
 
-        elif any(word in email for word in ["meeting", "schedule", "call"]):
-            return {"priority": "medium", "category": "meeting"}
+class EmailInput(BaseModel):
+    email: str
 
-        elif any(word in email for word in ["offer", "discount", "sale"]):
-            return {"priority": "low", "category": "promotion"}
+@app.post("/reset")
+def reset():
+    return {"status": "ok"}
 
-        else:
-            return {"priority": "low", "category": "general"}
+@app.post("/run")
+def run(data: EmailInput):
+    email = data.email.lower()
 
-    except Exception as e:
-        return {"error": str(e)}
+    if "urgent" in email:
+        return {"priority": "high"}
+    elif "meeting" in email:
+        return {"priority": "medium"}
+    else:
+        return {"priority": "low"}
