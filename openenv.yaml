@@ -1,0 +1,21 @@
+name: inbox_env
+version: 1.0
+
+entry_point: env.environment:InboxEnv
+
+description: >
+  A reinforcement learning environment for processing emails,
+  extracting tasks, and prioritizing actions.
+
+author: Kishore Nath
+
+python: ">=3.14"
+
+dependencies:
+  - pydantic
+  - gymnasium
+  - numpy
+
+run:
+  test: python scripts/test_env.py
+  baseline: python scripts/run_baseline.py
