@@ -1,18 +1,15 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, Request
 
 app = FastAPI()
 
-class EmailInput(BaseModel):
-    email: str
+@app.api_route("/", methods=["GET", "POST"])
+async def root(request: Request):
+    try:
+        data = await request.json()
+    except:
+        data = {}
 
-@app.post("/reset")
-def reset():
-    return {"status": "ok"}
-
-@app.post("/run")
-def run(data: EmailInput):
-    email = data.email.lower()
+    email = str(data).lower()
 
     if "urgent" in email:
         return {"priority": "high"}
@@ -20,3 +17,7 @@ def run(data: EmailInput):
         return {"priority": "medium"}
     else:
         return {"priority": "low"}
+
+@app.api_route("/{path:path}", methods=["GET", "POST"])
+async def catch_all(path: str, request: Request):
+    return {"status": "ok"}
